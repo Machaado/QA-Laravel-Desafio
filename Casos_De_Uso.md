@@ -16,7 +16,7 @@ Passos:
 
 Resultado Esperado: Cliente cadastrado com status "Pendente" e aparece na listagem.
 
--=-=-=-=-=-=-=
+-=-=-=-=-=-=-=-
 
 Caso de Teste 2 - Cadastro com CNPJ Inválido
 Objetivo: Validar a regra de CNPJ.
@@ -35,8 +35,7 @@ Passos:
 
 Resultado Esperado: Sistema exibe mensagem de erro: "CNPJ inválido".
 
-
-
+-=-=-=-=-=-=-=-
 
 Caso de Teste 3 - Cadastro com CNPJ Duplicado
 Objetivo: Garantir que o sistema não permita CNPJ repetido.
@@ -49,8 +48,7 @@ Passos:
 
 Resultado Esperado: Mensagem de erro: "CNPJ já cadastrado".
 
-
-
+-=-=-=-=-=-=-=-
 
 Caso de Teste 4 - Listagem com Filtro por Nome
 Objetivo: Verificar a busca de clientes por nome.
@@ -67,8 +65,7 @@ Passos:
 
 Resultado Esperado: Lista apenas com clientes cujo nome contém o termo filtrado.
 
-
-
+-=-=-=-=-=-=-=-
 
 Caso de Teste 5 - Aprovação de Cadastro
 Objetivo: Verificar o fluxo de aprovação de cliente.
