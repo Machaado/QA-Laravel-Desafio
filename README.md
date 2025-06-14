@@ -20,11 +20,16 @@
 
 ```cmd
 cd C:\caminho\até\a\pasta\laravel_desafio
+```
 
 3. Instale as dependências do Laravel:
 
+```cmd
 composer install
+```
 
 4. Execute os testes automatizados:
 
+```cmd
 php artisan test
+```
