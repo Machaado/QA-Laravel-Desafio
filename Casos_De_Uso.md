@@ -16,8 +16,7 @@ Passos:
 
 Resultado Esperado: Cliente cadastrado com status "Pendente" e aparece na listagem.
 
-
-
+-=-=-=-=-=-=-=
 
 Caso de Teste 2 - Cadastro com CNPJ Inválido
 Objetivo: Validar a regra de CNPJ.
