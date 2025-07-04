@@ -2,68 +2,67 @@
 
 namespace Tests\Feature;
 
-
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Models\Cliente;
 use Tests\TestCase;
 
 class ClienteTest extends TestCase
 {
-    
-    public function test_registerWithCorrectDatas()
+    use RefreshDatabase;
+    protected array $dadosCliente;
+
+    protected function setUp(): void
     {
-        $response = $this->postJson('/api/clientes', [
+        parent::setUp();
+
+        // Dados padrão reutilizáveis para testes
+        $this->dadosCliente = [
             'nome' => 'Marcelo Machado',
             'cnpj' => '12.345.678/0001-95',
             'email' => 'marcelo@emailteste.com',
             'telefone' => '(11) 99999-9999',
-        ]);
-
-        // Simulando resposta como se a API existisse
-        $response->assertStatus(201)
-                 ->assertJson(['status' => 'pendente']);
+        ];
     }
 
+        public function test_registerWithCorrectDatas()
+    {
+        $response = $this->postJson('/clientes', $this->dadosCliente);
 
+        // Simulando resposta como se a API existisse
+        $response->assertStatus(status: 200)
+                 ->assertJson(value: ['status' => 'pendente']);
+    }
 
     public function test_registerWithIncorrectCNPJ()
     {
-        $response = $this->postJson('/api/clientes', [
-            'nome' => 'Marcelo Machado',
-            'cnpj' => '12345678900000',
-            'email'=> 'marcelo@emailteste.com',
-            'telefone'=> '(11) 99999-9999'
-        ]);
+        $dadosInvalidos = [...$this->dadosCliente, 'cnpj' => '123456789000'];
 
-        $response -> assertStatus(422) 
-                  -> assertJson(['error'=> 'CNPJ Inválido']);
+        $response = $this->postJson('/clientes', $dadosInvalidos);
+
+        $response->assertStatus(400)
+        ->assertJson(['error' => 'The cnpj field format is invalid.']);
            
     }
 
 
     public function test_registerClienteWithDuplicatedCNPJ()
     {
-        $this->postJson('/api/clientes', [
-            'nome' => 'Cliente 1',
-            'cnpj' => '12.345.678/0001-95',
-            'email' => 'cliente1@teste.com',
-            'telefone' => '(11) 99999-9999',
+        Cliente::factory()->create([
+            'cnpj' => $this->dadosCliente['cnpj']
         ]);
 
+        $response = $this->postJson('/clientes', $this->dadosCliente);
 
-        $response = $this->postJson('/api/clientes', [
-            'nome' => 'Cliente 2',
-            'cnpj' => '12.345.678/0001-95', // mesmo CNPJ da conta criada acima.
-            'email' => 'cliente2@teste.com',
-            'telefone' => '(11) 88888-8888',
-        ]);
-
-        $response->assertStatus(409)
-                 ->assertJson(['error' => 'CNPJ já cadastrado']);
+        $response->assertStatus(400)
+        ->assertJson(['error' => 'The cnpj has already been taken.']);
     }
     
 
      public function test_ListOfClientsWithNameFilter()
     {
-        $response = $this->getJson('/api/clientes?nome=Machado');
+        Cliente::factory()->create(['nome' => 'Marcelo Machado']);
+
+        $response = $this->getJson('/clientes?nome=Machado');
 
         $response->assertStatus(200)
                  ->assertJsonFragment(['nome' => 'Marcelo Machado']);
@@ -71,12 +70,31 @@ class ClienteTest extends TestCase
     
     public function test_ClientApprove()
     {
-        $response = $this->postJson('/api/clientes/1/aprovar');
+        $cliente = Cliente::factory()->create();
+
+        $response = $this->postJson("/clientes/{$cliente->id}/aprovar");
 
         $response->assertStatus(200)
-                 ->assertJson(['status' => 'aprovado']);
+        ->assertJson(['status' => 'aprovado']);
+
+        $this->assertDatabaseHas('clientes', [
+            'id' => $cliente->id,
+            'status' => 'aprovado',
+        ]);
     }
+
+
+    public function test_CriarClienteNoBancoDeDados(): void 
+    {
+       $cliente = Cliente::factory()->create([
+        'nome' => 'MARCELO',
+        'cnpj' => '11.222.333/0001-44'
+       ]);
+
+       $this->assertDatabaseHas('clientes', [
+        'nome' => 'MARCELO'
+       ]);
+    }
+
     
-
-
 }
