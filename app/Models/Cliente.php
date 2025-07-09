@@ -15,6 +15,7 @@ class Cliente extends Model
         'cnpj',
         'email',
         'telefone',
-        'status'
+        'status',
+        'inadimplente',
     ];
 }

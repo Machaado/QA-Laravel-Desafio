@@ -22,6 +22,7 @@ class ClienteFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'telefone' => $this->faker->phoneNumber(),
             'status' => 'pendente', // valor padrão, pode ser sobrescrito no teste
+            'inadimplente' => false,
         ];
     }
 

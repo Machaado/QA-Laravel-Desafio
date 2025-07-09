@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Models\Cliente;
+use App\Models\SolicitacaoCredito;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -53,4 +54,21 @@ Route::post('/clientes/{cliente}/aprovar', function (Cliente $cliente) {
     $cliente->save();
 
     return response()->json(['status' => 'aprovado'], 200);
+});
+
+
+Route::post('/solicitar-credito/{cliente}', function (Cliente $cliente, Request $request) {
+    if ($cliente->inadimplente ?? false) {
+        return response()->json(['error' => 'Cooperado inadimplente'], 422);
+    }
+
+    $credito = SolicitacaoCredito::create([
+        'cliente_id' => $cliente->id,
+        'valor' => $request->input('valor'),
+        'status' => 'aprovado',
+    ]);
+
+    return response()->json(['status' => $credito->status],200);
+
+
 });
