@@ -62,13 +62,24 @@ Route::post('/solicitar-credito/{cliente}', function (Cliente $cliente, Request 
         return response()->json(['error' => 'Cooperado inadimplente'], 422);
     }
 
+    $valor = $request->input('valor');
+
+    // Verifica se o valor ultrapassa o limite
+    if ($valor > $cliente->limite_credito) {
+        return response()->json(['error' => 'Limite de crédito excedido'], 422);
+    }
+
+    // Atualiza o limite
+    $cliente->limite_credito -= $valor;
+    $cliente->save();
+
+    // Cria o crédito
     $credito = SolicitacaoCredito::create([
         'cliente_id' => $cliente->id,
-        'valor' => $request->input('valor'),
+        'valor' => $valor,
         'status' => 'aprovado',
     ]);
 
-    return response()->json(['status' => $credito->status],200);
-
+    return response()->json(['status' => 'aprovado'], 200);
 
 });

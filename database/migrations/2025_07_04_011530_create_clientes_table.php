@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('telefone');
             $table->string('status')->default('pendente');
             $table->boolean('inadimplente')->default(false);
+            $table->decimal('limite_credito', 10, 2)->default(10000);
             $table->timestamps();
         });
     }

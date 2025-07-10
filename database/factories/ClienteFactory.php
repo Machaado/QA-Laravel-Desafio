@@ -23,6 +23,7 @@ class ClienteFactory extends Factory
             'telefone' => $this->faker->phoneNumber(),
             'status' => 'pendente', // valor padrão, pode ser sobrescrito no teste
             'inadimplente' => false,
+            'limite_credito' => 10000,
         ];
     }
 

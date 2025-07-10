@@ -37,4 +37,20 @@ class SolicitacaoCreditoTest extends TestCase
         $response->assertStatus(200)
         ->assertJson(['status' => 'aprovado']);
     }
+
+
+    public function test_limite_atualiza_apos_aprovacao_de_credito()
+    {
+        $cliente = Cliente::factory()->create([
+            'limite_credito' => 10000
+        ]);
+
+        $this->postJson("/solicitar-credito/{$cliente->id}", [
+            'valor' => 3000
+        ]);
+
+        $clienteAtualizado = Cliente::find($cliente->id);
+
+        $this->assertEquals(7000, $clienteAtualizado->limite_credito);
+    }
 }
